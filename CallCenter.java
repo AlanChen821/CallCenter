@@ -54,9 +54,9 @@ public class CallCenter {
             // }
         }
 
-        final int fresherPoolSize = propertiesFromArgs.get(fresherPoolSizeKey);
-        final int technicalLeadPoolSize = propertiesFromArgs.get(technicalLeadPoolSizeKey);
-        final int productManagerPoolSize = propertiesFromArgs.get(productManagerPoolSizeKey);
+        final int fresherPoolSize = propertiesFromArgs.get(fresherPoolSizeKey) == null ? 5 : propertiesFromArgs.get(fresherPoolSizeKey);
+        final int technicalLeadPoolSize = propertiesFromArgs.get(technicalLeadPoolSizeKey) == null ? 1 : propertiesFromArgs.get(technicalLeadPoolSizeKey);
+        final int productManagerPoolSize = propertiesFromArgs.get(productManagerPoolSizeKey) == null ? 1 : propertiesFromArgs.get(productManagerPoolSizeKey);
         
         final int taskTotalCount = 100;
         final int maximum = 6;
