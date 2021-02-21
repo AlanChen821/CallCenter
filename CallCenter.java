@@ -9,11 +9,13 @@ public class CallCenter {
     public static void main(String[] args) {
         final int fresherPoolCount = 5;
         final int taskTotalCount = 100;
+        final int maximum = 6;
+        final int minimum = 1;
         final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
         List<Fresher> fresherPool = new ArrayList<>();
-        Fresher technicalLead = new Fresher("TL");
-        Fresher productManager = new Fresher("PM");
+        TechnicalLead technicalLead = new TechnicalLead("TL");
+        ProductManager productManager = new ProductManager("PM");
         
         initializeFresherPool(fresherPool, fresherPoolCount);
 
@@ -21,28 +23,35 @@ public class CallCenter {
         int currentTaskCount = 1;
         while (currentTaskCount <= taskTotalCount) {
             boolean isAssigned = false;
+            int level = (int)Math.random() * maximum + minimum;
+
             List<Fresher> idleFresherList = fresherPool.stream()
-            .filter(f -> !f.isBusy() && f.couldHandle())
+            .filter(f -> !f.isBusy() && f.couldHandle(level))
             .collect(Collectors.toList());
+            
+            // Optional<Fresher> firstIdleFresher2 = fresherPool.stream()
+            // .filter(f -> !f.isBusy() && f.couldHandle())
+            // .filter(f -> f.couldHandle())
+            // .findFirst();
             
             if (idleFresherList != null && !idleFresherList.isEmpty()) {
                 // LocalDateTime now = LocalDateTime.now();
                 Optional<Fresher> firstIdleFresher = idleFresherList.stream().findFirst();
                 Fresher firstIdleFresherItem = firstIdleFresher.get();
                 
-                System.out.println(String.format("%s : %s starts to handle task %d.", getCurrentTime(), firstIdleFresherItem.getFresherName(), currentTaskCount));
+                System.out.println(String.format("%s : %s starts to handle task %d.", getCurrentTime(), firstIdleFresherItem.getEmployeeName(), currentTaskCount));
                 Thread thread = new Thread(firstIdleFresherItem);
                 thread.start();
-                // firstIdleFresherItem.start();
+                
                 isAssigned = true;
-            } else if (!technicalLead.isBusy() && technicalLead.couldHandle()) {
+            } else if (!technicalLead.isBusy() && technicalLead.couldHandle(level)) {
                 System.out.println(String.format("%s : There's no idle fresher, need TL to handle task %d.", getCurrentTime(), currentTaskCount));
                  
                 Thread thread = new Thread(technicalLead);
                 thread.start();
                 
                 isAssigned = true;
-            } else if (!productManager.isBusy()) {
+            } else if (!productManager.isBusy() && productManager.couldHandle(level)) {
                 System.out.println(String.format("%s : There's no idle fresher & TL, need PM to handle task %d.", getCurrentTime(), currentTaskCount));
                 
                 Thread thread = new Thread(productManager);

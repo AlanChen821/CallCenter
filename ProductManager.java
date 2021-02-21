@@ -1,12 +1,12 @@
-public class TechnicalLead extends Employee {
+public class ProductManager extends Employee {
     private final int maximum = 6;
     private final int minimum = 1;
-    private final int threadshold = 1;
-
-    public TechnicalLead(String name) {
+    private final int threadshold = 0;
+    
+    public ProductManager(String name) {
         this.name = name;
         this.isBusy = false;
-	}
+    }
 
     public Boolean couldHandle() {
         return super.couldHandle(maximum, minimum, threadshold);

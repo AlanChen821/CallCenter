@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Employee implements Runnable {
@@ -21,31 +22,36 @@ public class Employee implements Runnable {
         return isBusy;
     }
 
-    public String getFresherName() {
+    public String getEmployeeName() {
         return name;
     }
 
-    public Boolean couldHandle() {
+    public Boolean couldHandle(int maximum, int minimum, int threadshold) {
         //  roll a dice to decide whether this employee is able to handle this task.
-        int result = (int)Math.random() * 6 + 1;
-        if (result > 3) {
+        double result = Math.random() * maximum + minimum;
+        int resultInInt = (int)result;
+        if (result > threadshold) {
+            // System.out.println(String.format("%f, %d, Unable to handle.", result, resultInInt));
             return false;
         } else {
+            // System.out.println(String.format("%f, %d, Could do that.", result, resultInInt));
             return true;
         }
+    }
+
+    public Boolean couldHandle(int threadshold, int level) {
+        return threadshold >= level;
     }
 
     @Override
     public void run() {
         isBusy = true;
 
-        try {
-            LocalDateTime now = LocalDateTime.now();
-                    
+        try {        
             long timeSpend = (long)(Math.random() * 10000);
-            Thread.sleep(timeSpend);
+            timeSpend = timeSpend < 3000 ? 3000 : timeSpend;  //  set to 3 if the time < 3 seconds, to ensure the employee spend some time on it.
             
-            now = LocalDateTime.now();
+            Thread.sleep(timeSpend);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
