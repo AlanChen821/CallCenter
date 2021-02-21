@@ -40,7 +40,7 @@ public class Employee implements Runnable {
     }
 
     public Boolean couldHandle(int threadshold, int level) {
-        return threadshold >= level;
+        return threadshold <= level;
     }
 
     @Override

@@ -2,9 +2,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Fresher extends Employee {
-    private final int maximum = 6;
-    private final int minimum = 1;
-    private final int threadshold = 3;
+    private final int threadshold = 2;
 
     //region : constructors
     // public Fresher() {
@@ -17,11 +15,7 @@ public class Fresher extends Employee {
     }
     //endregion
 
-    // @Override
-    public Boolean couldHandle() {
-        return super.couldHandle(maximum, minimum, threadshold);
-    }
-   
+    //region : constructors
     public Boolean couldHandle(int level) {
         return super.couldHandle(threadshold, level);
         // return threadshold >= level;
