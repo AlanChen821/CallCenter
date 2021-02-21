@@ -10,8 +10,8 @@ public class CallCenter {
     public static void main(String[] args) {
         HashMap<String, Integer> propertiesFromArgs = new HashMap<>();
         final String fresherPoolSizeKey = "fresherPoolSize";
-        final String technicalLeadPoolSizeKey = "technicalLeadPoolSize";
-        final String productManagerPoolSizeKey = "productManagerPoolSize";
+        final String TLPoolSizeKey = "technicalLeadPoolSize";
+        final String PMPoolSizeKey = "productManagerPoolSize";
 
         if (args != null) {
             // args = new String[] { "5", "1", "1" };  //  for testing
@@ -28,10 +28,10 @@ public class CallCenter {
                             propertiesFromArgs.put(fresherPoolSizeKey, size);
                         break;
                         case 1:
-                            propertiesFromArgs.put(technicalLeadPoolSizeKey, size);
+                            propertiesFromArgs.put(TLPoolSizeKey, size);
                         break;
                         case 2:
-                            propertiesFromArgs.put(productManagerPoolSizeKey, size);
+                            propertiesFromArgs.put(PMPoolSizeKey, size);
                         break;
                         default:
                         break;
@@ -55,8 +55,8 @@ public class CallCenter {
         }
 
         final int fresherPoolSize = propertiesFromArgs.get(fresherPoolSizeKey) == null ? 5 : propertiesFromArgs.get(fresherPoolSizeKey);
-        final int technicalLeadPoolSize = propertiesFromArgs.get(technicalLeadPoolSizeKey) == null ? 1 : propertiesFromArgs.get(technicalLeadPoolSizeKey);
-        final int productManagerPoolSize = propertiesFromArgs.get(productManagerPoolSizeKey) == null ? 1 : propertiesFromArgs.get(productManagerPoolSizeKey);
+        final int TLPoolSize = propertiesFromArgs.get(TLPoolSizeKey) == null ? 1 : propertiesFromArgs.get(TLPoolSizeKey);
+        final int PMPoolSize = propertiesFromArgs.get(PMPoolSizeKey) == null ? 1 : propertiesFromArgs.get(PMPoolSizeKey);
         
         final int taskTotalCount = 100;
         final int maximum = 6;
@@ -64,12 +64,14 @@ public class CallCenter {
         final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
         List<Fresher> fresherPool = new ArrayList<>();
-        List<TechnicalLead> technicalLeadPool = new ArrayList<>();
-        List<ProductManager> productManagerPool = new ArrayList<>();
+        List<TechnicalLead> TLPool = new ArrayList<>();
+        List<ProductManager> PMPool = new ArrayList<>();
         
+        System.out.println(String.format("%s : Start with Fresher Pool Size : %d, TL Pool Size : %d, PMPool Size : %d.", getCurrentTime(), fresherPoolSize, TLPoolSize, PMPoolSize));
+
         initializeFresherPool(fresherPool, fresherPoolSize);
-        initializeTechnicalLeadPool(technicalLeadPool, technicalLeadPoolSize);
-        initializePMPool(productManagerPool, productManagerPoolSize);
+        initializeTechnicalLeadPool(TLPool, TLPoolSize);
+        initializePMPool(PMPool, PMPoolSize);
 
         // region : start to process the call.
         int currentTaskCount = 1;
@@ -82,49 +84,48 @@ public class CallCenter {
             .findFirst();
             
             if (firstIdleFresher != null && firstIdleFresher.isPresent()) {
-            // if (idleFresherList != null && !idleFresherList.isEmpty()) {
                 // Optional<Fresher> firstIdleFresher = idleFresherList.stream().findFirst();
                 // Fresher firstIdleFresherItem = firstIdleFresher.get();
                 Fresher firstIdleFresherItem = firstIdleFresher.get();
 
-                System.out.println(String.format("%s : %s starts to handle task %d.", getCurrentTime(), firstIdleFresherItem.getEmployeeName(), currentTaskCount));
+                System.out.println(String.format("%s : %s starts to handle call %d.", getCurrentTime(), firstIdleFresherItem.getEmployeeName(), currentTaskCount));
                 Thread thread = new Thread(firstIdleFresherItem);
                 thread.start();
                 
                 isAssigned = true;
             } else {
-                Optional<TechnicalLead> firstIdleTL = technicalLeadPool.stream()
+                Optional<TechnicalLead> firstIdleTL = TLPool.stream()
                     .filter(t -> !t.isBusy() && t.couldHandle(level))
                     .findFirst();
                 if (firstIdleTL != null && firstIdleTL.isPresent()) {
-                    // System.out.println(String.format("%s : There's no idle fresher, need TL to handle task %d.", getCurrentTime(), currentTaskCount));
+                    // System.out.println(String.format("%s : There's no idle fresher, need TL to handle call %d.", getCurrentTime(), currentTaskCount));
                     
                     TechnicalLead firstIdleTLItem = firstIdleTL.get();
-                    System.out.println(String.format("%s : %s starts to handle task %d.", getCurrentTime(), firstIdleTLItem.getEmployeeName(), currentTaskCount));
+                    System.out.println(String.format("%s : %s starts to handle call %d.", getCurrentTime(), firstIdleTLItem.getEmployeeName(), currentTaskCount));
                     Thread thread = new Thread(firstIdleTLItem);
                     thread.start();
                     
                     isAssigned = true;
                 } else {
-                    Optional<ProductManager> firstIdlePM = productManagerPool.stream()
+                    Optional<ProductManager> firstIdlePM = PMPool.stream()
                     .filter(p -> !p.isBusy() && p.couldHandle(level))
                     .findFirst();
                     if (firstIdlePM != null && firstIdlePM.isPresent()) {
-                        // System.out.println(String.format("%s : There's no idle fresher & TL, need PM to handle task %d.", getCurrentTime(), currentTaskCount));
+                        // System.out.println(String.format("%s : There's no idle fresher & TL, need PM to handle call %d.", getCurrentTime(), currentTaskCount));
                         
                         ProductManager firstIdleProductManager = firstIdlePM.get();
-                        System.out.println(String.format("%s : %s starts to handle task %d.", getCurrentTime(), firstIdleProductManager.getEmployeeName(), currentTaskCount));
+                        System.out.println(String.format("%s : %s starts to handle call %d.", getCurrentTime(), firstIdleProductManager.getEmployeeName(), currentTaskCount));
                         Thread thread = new Thread(firstIdleProductManager);
                         thread.start();
                         isAssigned = true;
                     } else {
-                        System.out.println(String.format("%s : All employees are busy, task %d need to wait.", getCurrentTime(), currentTaskCount));
+                        System.out.println(String.format("%s : All employees are busy, call %d need to wait.", getCurrentTime(), currentTaskCount));
                     }
                 }
             }
         
             //  produce the sleep seconds randomly.
-            long sleepMS = (long) (Math.random() * 1000);
+            long sleepMS = (long) (Math.random() * 3000);
             try {
                 // System.out.println(String.format("sleep for %d ms.", sleepMS));
                 // Thread.sleep(1000);
@@ -138,21 +139,6 @@ public class CallCenter {
         // endregion
 
         System.out.print(String.format("%s : all the calls have been processed.\n", getCurrentTime()));
-    }
-
-    private static <T extends Employee> void initializePool(List<T> employeePool, String namePrefix, int size) {
-        if (employeePool == null) {
-            employeePool = new ArrayList<>();
-        }
-
-        for (int i = 0; i < size; i++) {
-            StringBuilder sB = new StringBuilder(namePrefix);
-            String num = String.format("%04d", i);
-            sB.append(num);
-            
-            Employee newEmployee = new Employee(sB.toString());
-            employeePool.add((T) newEmployee);
-        }
     }
 
     private static void initializeFresherPool(List<Fresher> fresherPool, int size) {

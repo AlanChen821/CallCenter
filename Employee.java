@@ -49,7 +49,7 @@ public class Employee implements Runnable {
 
         try {        
             long timeSpend = (long)(Math.random() * 10000);
-            timeSpend = timeSpend < 3000 ? 3000 : timeSpend;  //  set to 3 if the time < 3 seconds, to ensure the employee spend some time on it.
+            timeSpend = timeSpend < 5000 ? 5000 : timeSpend;  //  set to 3 if the time < 3 seconds, to ensure the employee spend some time on it.
             
             Thread.sleep(timeSpend);
         } catch (InterruptedException e) {
