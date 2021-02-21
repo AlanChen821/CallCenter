@@ -9,6 +9,10 @@ import java.util.Optional;
 public class CallCenter {
     public static void main(String[] args) {
         HashMap<String, Integer> propertiesFromArgs = new HashMap<>();
+        final String fresherPoolSizeKey = "fresherPoolSize";
+        final String technicalLeadPoolSizeKey = "technicalLeadPoolSize";
+        final String productManagerPoolSizeKey = "productManagerPoolSize";
+
         if (args != null) {
             // args = new String[] { "5", "1", "1" };  //  for testing
 
@@ -21,13 +25,13 @@ public class CallCenter {
                     int size = Integer.valueOf(arg);
                     switch (i) {
                         case 0:
-                            propertiesFromArgs.put("fresherPoolCount", size);
+                            propertiesFromArgs.put(fresherPoolSizeKey, size);
                         break;
                         case 1:
-                            propertiesFromArgs.put("technicalLead", size);
+                            propertiesFromArgs.put(technicalLeadPoolSizeKey, size);
                         break;
                         case 2:
-                            propertiesFromArgs.put("productManagerPoolSize", size);
+                            propertiesFromArgs.put(productManagerPoolSizeKey, size);
                         break;
                         default:
                         break;
@@ -50,9 +54,9 @@ public class CallCenter {
             // }
         }
 
-        final int fresherPoolSize = propertiesFromArgs.get("fresherPoolCount");
-        final int technicalLeadPoolSize = propertiesFromArgs.get("technicalLead");
-        final int productManagerPoolSize = propertiesFromArgs.get("productManagerPoolSize");
+        final int fresherPoolSize = propertiesFromArgs.get(fresherPoolSizeKey);
+        final int technicalLeadPoolSize = propertiesFromArgs.get(technicalLeadPoolSizeKey);
+        final int productManagerPoolSize = propertiesFromArgs.get(productManagerPoolSizeKey);
         
         final int taskTotalCount = 100;
         final int maximum = 6;
